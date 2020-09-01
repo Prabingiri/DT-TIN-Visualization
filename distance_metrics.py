@@ -6,7 +6,7 @@ from scipy.spatial.distance import directed_hausdorff
 import pickle
 # import compressionmethods
 # import distance_metr
-# points = open('1.txt','rb')
+
 class distance_metrics:
     def __init__(self, dataset):
 
@@ -69,7 +69,7 @@ class distance_metrics:
         # raw_volume=dict()
         loc_time_series = dict()
         rawdata = open('app/static/dataset/rawa_data/'+self.dataset+ '.txt', 'r')
-        # rawdata = open('/home/prabin/Sigspatial2020/CET-LATS/app/static/dataset/rawa_data/' + self.dataset + '.txt', 'r')
+
 
         for dpoints in rawdata:
             dpoints = dpoints.split(',')
@@ -132,7 +132,7 @@ class distance_metrics:
     #     # print("xyz")
     #
     #     data = open('app/static/dataset/rawa_data/' + self.dataset + '.txt', 'r')
-    #     # data = open('/home/prabin/Sigspatial2020/CET-LATS/app/static/dataset/rawa_data/' + self.dataset + '.txt', 'r')
+
     #
     #     loc_ts = dict()
     #     for ts in data:
