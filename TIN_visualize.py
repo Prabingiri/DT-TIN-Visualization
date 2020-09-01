@@ -22,8 +22,7 @@ class visualize:
         loc_time_series = dict()
         rawdata = open('path/for/dataset' + self.dataset + '.txt', 'r')
 
-        # rawdata = open('/app/static/dataset/rawa_data/'+self.dataset+'.txt', 'r')
-        # CET-LATS/app/static/dataset/rawa_data/6.txt
+
         z = []
         for dpoints in rawdata:
             dpoints = dpoints.split(',')
