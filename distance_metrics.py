@@ -46,7 +46,7 @@ class distance_metrics:
     def Volumetric_Difference(self, instance1, instance2):
         # raw_volume=dict()
         loc_time_series = dict()
-        rawdata = open('/path/dataset/'+self.dataset+ '.txt', 'r')
+        rawdata = open('/path/to/dataset/'+self.dataset+ '.txt', 'r')
 
 
         for dpoints in rawdata:
@@ -93,52 +93,32 @@ class distance_metrics:
 
 
 
-    #
-    # def Hausdarff_distance(self, raw_tri_vol, compress_data):
-    #     # print("xyz")
-    #
-    #     data = open('app/static/dataset/rawa_data/' + self.dataset + '.txt', 'r')
 
-    #
-    #     loc_ts = dict()
-    #     for ts in data:
-    #         ts = ts.split(',')
-    #         lon, lat = self.lon_lat_to_XYZ(float(ts[0]), float(ts[1]))
-    #         time_s = [float(each_one) for each_one in ts[2:]]
-    #         loc_ts[(lon, lat)] = time_s
-    #
-    #     res_each_cluster = dict()
-    #
-    #     for each_tri in raw_tri_vol:
-    #         p1, p2, p3 = each_tri[0], each_tri[1], each_tri[2]
-    #         raw1, raw2, raw3 = loc_ts[p1], loc_ts[p2], loc_ts[p3]
-    #
-    #         for c_tech in compress_data[p1]:
-    #             c1, c2, c3 = compress_data[p1][c_tech], compress_data[p2][c_tech], compress_data[p3][c_tech]
-    #             if c_tech[0] == 'DP' or c_tech[0] == 'VW' or c_tech[0] == 'OPT':
-    #                 c_ratio = float(sum([1 if val is not None else 0 for val in c1]) +
-    #                                 sum([1 if val is not None else 0 for val in c2]) +
-    #                                 sum([1 if val is not None else 0 for val in c3])) / (3 * len(c1))
-    #                 c1, c2, c3 = self.interpolate(c1), self.interpolate(c2), self.interpolate(c3)
-    #             else:
-    #                 c_ratio = c_tech[1]
-    #
-    #             if (c_tech[0], c_ratio) not in res_each_cluster:
-    #                 res_each_cluster[(c_tech[0], c_ratio)] = {'max': [], 'mean': []}
-    #
-    #             h_d = []
-    #             for idx, val in enumerate(raw1):
-    #                 raw_v = [(p1[0], p1[1], val), (p2[0], p2[1], raw2[idx]), (p3[0], p3[1], raw3[idx])]
-    #                 c_v = [(p1[0], p1[1], c1[idx]), (p2[0], p2[1], c2[idx]), (p3[0], p3[1], c3[idx])]
-    #                 h_d.append(max(directed_hausdorff(raw_v, c_v)[0], directed_hausdorff(c_v, raw_v)[0]))
-    #
-    #
-    #             res_each_cluster[(c_tech[0], c_ratio)]['max'].append(max(h_d))
-    #             res_each_cluster[(c_tech[0], c_ratio)]['mean'].append(sum(h_d) / len(h_d))
-    #         # data.close()
-    #
-    #         # print("HD")
-    #         return res_each_cluster
-    #
-    #
-    #
+    def Hausdarff_distance(self, instance1, instance2):
+        data = open('path/to/dataset/' + self.dataset + '.txt', 'r')
+        loc_ts = dict()
+        for ts in data:
+            ts = ts.split(',')
+            lon, lat = self.lon_lat_to_XYZ(float(ts[0]), float(ts[1]))
+            time_s = [float(each_one) for each_one in ts[2:]]
+            loc_ts[(lon, lat)] = time_s
+        points = np.array(list(loc_ts.keys()))
+        tris = Delaunay(points)
+            # print(tris)
+            # print(len(tris.simplices))
+
+        sum_vol_instance_1 = 0
+        sum_vol_instance_2 = 0
+        h_d = []
+        for each_tri in points[tris.simplices]:
+
+            p1, p2, p3 = tuple(each_tri[0]), tuple(each_tri[1]), tuple(each_tri[2])
+            # print(p1, p2, p3)
+            ts1, ts2, ts3 = loc_ts[p1], loc_ts[p2], loc_ts[p3]
+
+            instanc1_TIN = [(p1[0], p1[1], ts1[instance1]), (p2[0], p2[1], ts2[instance1]), (p3[0], p3[1], ts3[instance1])]
+            instance2_TIN = [(p1[0], p1[1], ts1[instance2]), (p2[0], p2[1], ts2[instance2]), (p3[0], p3[1], ts3[instance2])]
+            # print(h_d)
+            h_d.append(max(directed_hausdorff(instanc1_TIN, instance2_TIN)[0], directed_hausdorff(instanc1_TIN, instance2_TIN)[0]))
+
+        return h_d
