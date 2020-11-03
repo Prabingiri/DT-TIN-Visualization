@@ -20,7 +20,7 @@ class visualize:
 
     def val_and_lon_lat(self, val_idx:int):
         loc_time_series = dict()
-        rawdata = open('path/for/dataset' + self.dataset + '.txt', 'r')
+        rawdata = open('/path/dataset/' + self.dataset + '.txt', 'r')
 
 
         z = []
@@ -63,7 +63,7 @@ class visualize:
         # plt.colorbar(m)
         # plt.show()
         # path to store image
-        return plt.savefig('/TINinstance/3D{0}.png'.format(datset.lower()))
+        return plt.savefig('TINinstance/3D{0}.png'.format(dataset.lower()))
 
 
 
