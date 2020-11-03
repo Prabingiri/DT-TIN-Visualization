@@ -11,12 +11,14 @@ def visualization(instance1, instance2, dataset):
 
 if __name__ == '__main__':
     time_instance1 = 1
-    time_instance2 = 250
+    time_instance2 = 50
     dataset = 'cluster1'
     visualization(time_instance1, time_instance2, dataset)
     d_metric = distance_metrics(dataset)
     volume_distance = d_metric.Volumetric_Difference(time_instance1, time_instance2)
     print(volume_distance)
+    Hausdorff_distance = d_metric.Hausdarff_distance(time_instance1, time_instance2)
+    print(max(Hausdorff_distance))
 
 
 
