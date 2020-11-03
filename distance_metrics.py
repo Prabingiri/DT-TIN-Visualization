@@ -11,9 +11,6 @@ class distance_metrics:
     def __init__(self, dataset):
 
         self.dataset = dataset
-        # self.compress_data = compressdata
-        # self.compress_data = compressionmethods.select_compressionmethod
-        # self.compressed_vol = dict()
         self.raw_volume = dict()
         self.whole_vol_res = dict()
         self.res_each_cluster = dict()
@@ -29,26 +26,7 @@ class distance_metrics:
             self.loc_ts[(lon, lat)] = time_s
         return self.loc_ts
 
-    #
-    # def interpolate(self, points: List[float]) -> List[float]:
-    #     idx = 0
-    #
-    #     while idx < len(points):
-    #         if points[idx] is None:
-    #             start_p = idx - 1
-    #             while idx < len(points):
-    #                 if points[idx] is not None:
-    #                     break
-    #                 idx += 1
-    #
-    #             slope = (points[idx] - points[start_p]) / (idx - start_p)
-    #
-    #             points[start_p + 1:idx] = [points[start_p] + i * slope for i in range(1, idx - start_p)]
-    #         else:
-    #             idx += 1
-    #     # print(points)
-    #
-    #     return points
+
 
 
     def lon_lat_to_XYZ(self, lon: float, lat: float):
@@ -65,10 +43,10 @@ class distance_metrics:
         volume = base_area * h
         return volume
 
-    def raw_volfor1cluster(self):
+    def Volumetric_Difference(self, instance1, instance2):
         # raw_volume=dict()
         loc_time_series = dict()
-        rawdata = open('app/static/dataset/rawa_data/'+self.dataset+ '.txt', 'r')
+        rawdata = open('/path/dataset/'+self.dataset+ '.txt', 'r')
 
 
         for dpoints in rawdata:
@@ -79,54 +57,42 @@ class distance_metrics:
         points = np.array(list(loc_time_series.keys()))
         tris = Delaunay(points)
         # print(tris)
+        # print(len(tris.simplices))
+
+        sum_vol_instance_1 = 0
+        sum_vol_instance_2 = 0
         for each_tri in points[tris.simplices]:
             p1, p2, p3 = tuple(each_tri[0]), tuple(each_tri[1]), tuple(each_tri[2])
             # print(p1, p2, p3)
             ts1, ts2, ts3 = loc_time_series[p1], loc_time_series[p2], loc_time_series[p3]
             # print(ts1, ts2, ts3)
-            # print(len(ts1))
+            # print(len(ts1[0]))
             # print(len(points))
+            # for instance 1
 
-            for timestamp in range(len(ts1)):
-                self.raw_volume[(p1, p2, p3)] = self.raw_volume.get((p1, p2, p3), [])+\
-                                           [self.calc_Volume(list(p1)+[ts1[timestamp]], list(p2)+[ts2[timestamp]], list(p3)+[ts3[timestamp]])]
-        # print("the length is raw volume is:" )
-        # print(lenself.raw_volume[165])
+            first_instance = self.calc_Volume(list(p1) + [ts1[instance1]], list(p2) + [ts2[instance1]],
+                              list(p3) + [ts3[instance1]])
+            # print(first_instance)
+            sum_vol_instance_1 += first_instance
+            # print(sum_vol_instance_1)
+
+            second_instance = self.calc_Volume(list(p1) + [ts1[instance2]], list(p2) + [ts2[instance2]],
+                              list(p3) + [ts3[instance2]])
+            # print(first_instance, second_instance)
+            sum_vol_instance_2 += second_instance
+            # print(sum_vol_instance_1, sum_vol_instance_2)
+
+
+
+
+        # print(sum_vol_instance_1, sum_vol_instance_2)
+        vol_diff = abs(sum_vol_instance_1-sum_vol_instance_2)
+        # print(vol_diff)
         rawdata.close()
-        return self.raw_volume
+        return vol_diff
 
 
-    # def volume_difference(self, raw_volume, raw_volumeinstance1, rawvolumeinstance2):
-    #     # print("calculating difference")
-    #
-    #     for each_tri in compressed_vol:
-    #         # print("still here")
-    #         raw_vol = raw_volume[each_tri]
-    #         res_each_cluster = dict()
-    #
-    #         for c_tec, c_vol in compressed_vol[each_tri].items():
-    #             max_diff, mean_diff =\
-    #                 max([abs(val - c_vol[idx]) for idx, val in enumerate(raw_vol)]), \
-    #                 sum([abs(val - c_vol[idx]) for idx, val in enumerate(raw_vol)])/len(raw_vol)
-    #
-    #
-    #             if c_tec not in res_each_cluster:
-    #                 res_each_cluster[c_tec] = { 'max': [max_diff], 'mean': [mean_diff]}
-    #                 # print("finding min max")
-    #             else:
-    #                 # res_each_cluster[c_tec]['min'].append(min_diff)
-    #                 res_each_cluster[c_tec]['max'].append(max_diff)
-    #                 res_each_cluster[c_tec]['mean'].append(mean_diff)
-    #                 # print("nearly done")
-    #
-    #
-    #
-    #             # print(" difference in volume is calculated")
-    #             # print(res_each_cluster)
-    #             return res_each_cluster
-    #
-    #
-    #
+
     #
     # def Hausdarff_distance(self, raw_tri_vol, compress_data):
     #     # print("xyz")
