@@ -1,5 +1,5 @@
 from TIN_visualize import visualize
-import distance_metrics
+from distance_metrics import distance_metrics
 # from app.visualization import visualize
 def visualization(instance1, instance2, dataset):
     v = visualize(dataset)
@@ -14,6 +14,9 @@ if __name__ == '__main__':
     time_instance2 = 250
     dataset = 'cluster1'
     visualization(time_instance1, time_instance2, dataset)
+    d_metric = distance_metrics(dataset)
+    volume_distance = d_metric.Volumetric_Difference(time_instance1, time_instance2)
+    print(volume_distance)
 
 
 
